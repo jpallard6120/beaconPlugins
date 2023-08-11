@@ -1,12 +1,17 @@
 // Docs for page events: https://beacon-help.support.brightcove.com/ott-plugins/working-with-page-events.html
-
 const playerTimings = (playerEvent) => {
+
+  // Check for debug parameter, to activate console.log calls below
+  const url = new URL(window.location.href);
+  const debugParam = url.searchParams.get("debug");
+  const debug = debugParam === "true";
+
   // Get the video player from the event
   const data = playerEvent.data.data;
-  console.log('data is: ', data)
+  debug && console.log('data is: ', data);
   const video_id = data.video_id;
   const player = document.querySelector(`video-js[data-video-id="${video_id}"] > video`);
-  console.log('Player is: ', player)
+  debug && console.log('Player is: ', player);
 
   // Add a slot for timings data within the player object
   player.timingData = {
@@ -41,7 +46,7 @@ const playerTimings = (playerEvent) => {
 
       // Push a dataLayer.push event if within our list of events we want to push, but don't push if it's already been pushed
       let intPercent = Math.floor(percentTime)
-      console.log(intPercent)
+      debug && console.log(intPercent);
       if ( datalayerEvents.includes(intPercent) && !pushedEvents.includes(intPercent)) {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
@@ -58,7 +63,7 @@ const playerTimings = (playerEvent) => {
           }
         });
         pushedEvents.push(intPercent)
-        console.log('Pushed to dataLayer: ', `video_view_${intPercent}`)
+        debug && console.log('Pushed to dataLayer: ', `video_view_${intPercent}`);
       }
 
       previousTime = currentTime;
