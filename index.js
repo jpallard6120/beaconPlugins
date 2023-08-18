@@ -8,12 +8,6 @@ window.addEventListener("message", (event) => {
   ];
   if (originsAllowed.includes(event.origin)) {
 
-<<<<<<< HEAD
-    switch (event.data.event) {
-
-      case 'loadedBeaconVideoMetadata':
-        playerTimings(event);
-=======
     // Check for debug parameter, to activate console.log calls below
     const url = new URL(window.location.href);
     const debugParam = url.searchParams.get("debug");
@@ -76,7 +70,6 @@ window.addEventListener("message", (event) => {
           }
         }
         playerTimings(event, player, debug);
->>>>>>> BrightcoveBeaconAnalyticsPlugin/main
       break;
 
       case 'beforeBeaconPageLoad':
