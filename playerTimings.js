@@ -1,4 +1,5 @@
 // Docs for page events: https://beacon-help.support.brightcove.com/ott-plugins/working-with-page-events.html
+<<<<<<< HEAD
 const playerTimings = (playerEvent) => {
 
   // Check for debug parameter, to activate console.log calls below
@@ -11,6 +12,12 @@ const playerTimings = (playerEvent) => {
   debug && console.log('data is: ', data);
   const video_id = data.video_id;
   const player = document.querySelector(`video-js[data-video-id="${video_id}"] > video`);
+=======
+const playerTimings = (playerEvent, player, debug) => {
+  // Get the video player from the event
+  const data = playerEvent.data.data;
+  debug && console.log('data is: ', data);
+>>>>>>> BrightcoveBeaconAnalyticsPlugin/main
   debug && console.log('Player is: ', player);
 
   // Add a slot for timings data within the player object
