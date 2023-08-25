@@ -1,3 +1,4 @@
+// v1.0.0
 // Docs for plugin structure: https://beacon.support.brightcove.com/ott-plugins/javascript-modules-beacon-plugins.html
 import { playerTimings } from './playerTimings.js';
 
