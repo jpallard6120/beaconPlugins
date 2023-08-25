@@ -15,10 +15,14 @@ const playerTimings = (playerEvent, player, debug) => {
   const datalayerEvents = [0, 5, 25, 50, 75, 90, 100]
   let pushedEvents = [] // We will store already pushed events here, to avoid double pushing
 
-  // Add event listener to fire updates on video time updates
+  // Define global vars
   let totalTime = 0
   let percentTime = 0
+  let intPercent = 0
   let previousTime // Init previousTime to undefined so that currentTime is used for totalTime on the first call
+  window.timingData = {video_id: data.video_id, percent: 0, time: 0} // Adding timing data to the global window object, to be able to access it within other contexts
+  
+  // Add event listener to fire updates on video time updates
   player.addEventListener("timeupdate", (event) => {
     if (!player.seeking) { // We need this check for rare events where, on a seek, timeupdate fires before seeking
       const currentTime = event.target.currentTime;
@@ -30,15 +34,18 @@ const playerTimings = (playerEvent, player, debug) => {
 
       // Calculating total time played so far
       totalTime = difference + totalTime;
-      player.timingData.totalTimePlayed = totalTime //Adding the value to the player object for access in other contexts
-
+      if (totalTime) {
+        player.timingData.totalTimePlayed = totalTime; //Adding the value to the player object for access in other contexts
+        window.timingData.time = totalTime; //Adding the value to the window object for access in other contexts if the player is destroyed
+      }
       // Calculating percent played so far (it can go over 100% for videos that were rewatched within the same play session)
       percentTime = (totalTime / player.duration) * 100
-      player.timingData.totalPercentPlayed = percentTime
-
+      if (percentTime) {
+        player.timingData.totalPercentPlayed = percentTime;
+        window.timingData.percent = percentTime;
+        intPercent = Math.floor(percentTime) 
+      }
       // Push a dataLayer.push event if within our list of events we want to push, but don't push if it's already been pushed
-      let intPercent = Math.floor(percentTime)
-      debug && console.log(intPercent);
       if ( datalayerEvents.includes(intPercent) && !pushedEvents.includes(intPercent)) {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
@@ -55,9 +62,9 @@ const playerTimings = (playerEvent, player, debug) => {
           }
         });
         pushedEvents.push(intPercent)
-        debug && console.log('Pushed to dataLayer: ', `video_view_${intPercent}`);
+        debug && console.log('Event pushed to dataLayer: ', `video_view_${intPercent}`);
       }
-
+      
       previousTime = currentTime;
     };
   });
