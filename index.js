@@ -143,6 +143,16 @@ window.addEventListener("message", (event) => {
           }
         }
       break;
+
+      case 'userDidSignIn':
+      case 'userDidRegister':
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            event: event.data.event,
+            data: event.data.data,
+            user_id: event.data.data.account_token
+          });
+      break;
     }
   }
 },
